@@ -21,11 +21,12 @@ When triggered, generate the project structure and essential configuration files
 - **Air-gapped Readiness:** The application MUST embed all necessary libraries and assets (no external CDNs or external library fetches at runtime) to ensure full functionality on isolated networks.
 - **SBOM Generation:** Use minimalist Docker images (e.g., Alpine or Distroless). The CI/CD or build instructions must include generating an SBOM (Software Bill of Materials) report for each image after the build.
 - **Deployment & Security README:** The `README.md` must ALWAYS specify the security measures applied and contain clear instructions for deploying the project via Docker, Podman, and kubectl, explicitly detailing the rootless configuration.
+- **Secret Management (Optional Capability):** Scaffold the architecture to support fetching secrets dynamically from an external vault (e.g., HashiCorp Vault, SOPS) in production environments, keeping local `.env` usage strictly for basic local development.
 
 ### 2. Frontend (Node.js) & Reverse Proxies
 - **Structure:** Scaffold the frontend code and its `Dockerfile` in a dedicated `/frontend` directory.
 - **Supply Chain Security:** Include a pre-build step in the pipeline or `package.json` to verify dependencies are not compromised (e.g., `npm audit`, `yarn audit`, or `snyk test`) before any build command is executed.
-- **Example Configurations:** ALWAYS create an `example/` folder containing secure, post-quantum resistant TLS configurations for Nginx (standalone/non-docker), Traefik (for Podman/Docker), and Nginx Ingress (for Kubernetes).
+- **Example Configurations (with Strict Headers):** ALWAYS create an `example/` folder containing secure, post-quantum resistant TLS configurations for Nginx (standalone/non-docker), Traefik (for Podman/Docker), and Nginx Ingress (for Kubernetes). These examples MUST include extreme security HTTP headers: a strict Content Security Policy (CSP) without `unsafe-inline`, HSTS with subdomains, and restrictive Permissions-Policy headers.
 - **Session Security:** Enforce secure session management (Cookies must be `HttpOnly`, `SameSite=Lax`, `Secure`). Implement CSRF protection (e.g., requiring `X-Requested-With` headers) and ensure password changes invalidate all active sessions.
 
 ### 3. Backend (Python) & Database
@@ -38,6 +39,7 @@ When triggered, generate the project structure and essential configuration files
 
 ### 4. Logging, Audit & Operations
 - **Centralized Logging:** Implement a robust logging system with explicit log levels (DEBUG, INFO, WARN, ERROR, CRITICAL).
+- **Data Masking (Admin Toggle):** The logging configuration MUST include an optional Data Masking middleware (manageable via the admin interface) that automatically redacts PII (emails, phone numbers, etc.) from the logs to respect Privacy by Design (RGPD/CNIL).
 - **Comprehensive Audit Trail:** Log all critical actions with IP, user, and detailed context (sign-ins, approvals, rights changes, data exports).
 - **Syslog Connector (mTLS):** Include an `rsyslog` connector/configuration to securely forward logs via syslog (RFC 5424 structured data) over mutual TLS (mTLS).
 - **PKI Injection:** Provide a mechanism (via the admin interface or environment/volume mapping) to inject an internal PKI PEM certificate for secure communications.

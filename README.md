@@ -1,8 +1,8 @@
 # 🛡️ Secure App Scaffolder - AI Skill
 
-This repository contains a custom AI Skill (`SKILL.md`) designed to force AI assistants (like Claude) to generate **secure-by-design** application boilerplates. It enforces strict compliance with ANSSI, CIS, and FBI security guidelines.
+This repository contains a custom AI Skill (`SKILL.md`) designed to force AI assistants (like Claude) to generate **secure-by-design** application boilerplates. It enforces strict compliance with ANSSI, CIS, FBI, and GDPR/CNIL security guidelines.
 
-By feeding this skill to your AI, it will stop generating generic, insecure code and instead output production-ready architectures featuring rootless execution, SBOM generation, post-quantum cryptography readiness, and strict identity management (OIDC/LDAPS).
+By feeding this skill to your AI, it will stop generating generic, insecure code and instead output production-ready architectures featuring rootless execution, SBOM generation, post-quantum cryptography readiness, and strict identity management.
 
 ## 🚀 How to use this skill with Claude
 
@@ -29,6 +29,8 @@ If you don't use Claude Projects, you can inject the skill manually at the start
 - **Zero Root Execution:** Forces unprivileged users (`USER 1000:1000`) in all container engines.
 - **Air-Gapped Readiness:** No external CDNs at runtime.
 - **Supply Chain Security:** Blocks compilation if vulnerabilities are found in Node dependencies and enforces SBOM generation.
+- **Dynamic Secret Management:** Scaffolds Vault/SOPS integration to eliminate `.env` files in production.
 - **Post-Quantum Cryptography:** Prepares PostgreSQL and Nginx for hybrid PQ encryption algorithms.
 - **Enterprise Auth:** Enforces Argon2 (or stronger), WebAuthn, OIDC (PKCE), and LDAPS.
-- **Strict Audit & Logging:** Generates mTLS Syslog configurations and comprehensive audit trails.
+- **Extreme HTTP Security:** Enforces strict CSP (no `unsafe-inline`), HSTS, and Permissions-Policy in reverse proxies.
+- **Privacy by Design & Audit:** Generates mTLS Syslog configurations, comprehensive audit trails, and PII Data Masking middlewares.
