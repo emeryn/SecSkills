@@ -1,0 +1,16 @@
+# AI Assistant Global Instructions
+
+This project enforces strict architectural and development rules defined as "Skills". 
+All active skills are stored as Markdown files in the `docs/ai-skills/` directory.
+
+Before executing any task or generating code, you MUST:
+1. Check the `docs/ai-skills/` directory for any relevant skill files.
+2. Read the relevant `.md` file(s) entirely.
+3. Strictly apply the rules, constraints, and patterns defined in those skills.
+
+### Core Domains & Known Skills:
+* **Architecture & Security:** Read `secure-app-scaffolder.md`
+* **Local AI & MCP:** Read `offline-llm-orchestrator.md`
+* *(You are expected to automatically discover and read any other relevant skill added to the folder).*
+
+If multiple skills apply to a single request, you must read and combine their constraints. Never bypass these rules.
