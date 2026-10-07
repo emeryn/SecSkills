@@ -1,6 +1,6 @@
 ---
 name: secure-app-scaffolder
-description: Scaffolds a secure-by-design Node.js/Python application compliant with ANSSI/CIS/FBI. Includes rootless execution, out-of-the-box defaults, post-quantum DB encryption prep, advanced auth, strict logging, and dual CI/CD security scanning.
+description: Scaffolds a secure-by-design Node.js/Python application compliant with ANSSI/CIS/FBI. Includes rootless execution, out-of-the-box defaults, post-quantum DB encryption prep, advanced auth, strict logging, dual CI/CD security scanning, and zero-trust input validation.
 ---
 # Secure App Scaffolder
 
@@ -35,12 +35,14 @@ When triggered, generate the project structure and essential configuration files
 
 ### 3. Frontend (Node.js) & Reverse Proxies
 - **Structure:** Scaffold the frontend code and its `Dockerfile` in a dedicated `/frontend` directory.
+- **Zero-Trust Input (XSS & Injection Prevention):** Every single input field, textbox, and form MUST be strictly typed and sanitized. Enforce context-aware output encoding to prevent XSS and implement strict client-side validation schemas.
 - **Supply Chain Security:** Include a pre-build step in the pipeline or `package.json` to verify dependencies are not compromised (e.g., `npm audit`, `yarn audit`, or `snyk test`) before any build command is executed.
 - **Example Configurations (with Strict Headers):** ALWAYS create an `example/` folder containing secure, post-quantum resistant TLS configurations for Nginx (standalone/non-docker), Traefik (for Podman/Docker), and Nginx Ingress (for Kubernetes). These examples MUST include extreme security HTTP headers: a strict Content Security Policy (CSP) without `unsafe-inline`, HSTS with subdomains, and restrictive Permissions-Policy headers.
 - **Session Security:** Enforce secure session management (Cookies must be `HttpOnly`, `SameSite=Lax`, `Secure`). Implement CSRF protection (e.g., requiring `X-Requested-With` headers) and ensure password changes invalidate all active sessions.
 
 ### 4. Backend (Python) & Database
 - **Version & Environment:** Always specify the latest stable version of Python. Use virtual environments or precise container layers.
+- **Zero-Trust Validation & Parameterization:** The backend MUST implement strict input validation (e.g., Pydantic, Zod, or equivalent) for ALL incoming payloads. All database interactions MUST strictly use parameterized queries or a safe ORM to categorically eliminate SQL Injection.
 - **Security Scanning:** Include SAST and dependency checking tools in the dev requirements and pre-commit hooks.
 - **Database (PostgreSQL Default):** Unless otherwise specified, ALWAYS default to a minimalist and hardened PostgreSQL base. If an SQL console is implemented, it MUST be sandboxed (read-only, single SELECT per query, locked configuration, time limit).
 - **Post-Quantum Encryption at Rest:**
