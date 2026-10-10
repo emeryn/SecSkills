@@ -4,13 +4,16 @@ This project enforces strict architectural and development rules defined as "Ski
 All active skills are stored as Markdown files in the `docs/ai-skills/` directory.
 
 Before executing any task or generating code, you MUST:
-1. Check the `docs/ai-skills/` directory for any relevant skill files.
-2. Read the relevant `.md` file(s) entirely.
-3. Strictly apply the rules, constraints, and patterns defined in those skills.
+1. Identify the domain of the user's request (e.g., security, LLM, deployment, cleanup).
+2. Check the `docs/ai-skills/` directory for any relevant skill files.
+3. Read the relevant `.md` file(s) entirely.
+4. Strictly apply the rules, constraints, and patterns defined in those skills.
 
 ### Core Domains & Known Skills:
-* **Architecture & Security:** Read `secure-app-scaffolder.md`
-* **Local AI & MCP:** Read `offline-llm-orchestrator.md`
+* **Architecture, Security & Scaffolding:** Read `secure-app-scaffolder.md`
+* **Local AI, Chatbots & MCP:** Read `offline-llm-orchestrator.md`
+* **Pre-production & Deep Cleanup:** Read `deep-cleanup.md`
 * *(You are expected to automatically discover and read any other relevant skill added to the folder).*
 
-If multiple skills apply to a single request, you must read and combine their constraints. Never bypass these rules.
+If multiple skills apply to a single request, you must read and combine their constraints. Never bypass these rules. 
+**CRITICAL:** You must NEVER stage, commit, or push these skill files or this `.clauderules` file.

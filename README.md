@@ -1,19 +1,12 @@
-# 🛡️ AI Skills Library for Secure & Offline Architecture
+# 🛡️ Secure App & Offline AI Architecture
 
-This repository contains a collection of custom AI Skills designed to force AI assistants (like Claude, Cline, or Roo Code) to generate **secure-by-design** and **offline-first** application boilerplates.
+This repository uses AI Skills to enforce a **secure-by-design** and **offline-first** application boilerplate. It requires AI assistants (like Claude, Cline, or Roo) to adhere strictly to ANSSI/CIS/FBI guidelines and isolated execution environments.
 
-By feeding these skills to your AI, it will stop generating generic, insecure code and instead output production-ready architectures featuring rootless execution, SBOM generation, post-quantum cryptography readiness, strict identity management, and air-gapped LLM/MCP integrations.
+## 📂 Project Structure & AI Skills
 
-## 📂 Project Structure
+This project is guided by dynamic rules located in the documentation folder:
 
-To manage multiple skills efficiently without confusing the AI, we use a "Master Rule" approach. Place the skill files in a dedicated documentation folder:
-
-```text
-your-project/
-├── .clauderules                 <-- The Master Rule file read by the AI
-├── docs/
-│   └── ai-skills/
-│       ├── secure-app-scaffolder.md
-│       └── offline-llm-orchestrator.md
-├── src/
-└── ...
+- `.clauderules` (Root) : Forces the AI to read the skills before executing tasks.
+- `docs/ai-skills/secure-app-scaffolder.md` : Enforces zero-trust input, rootless containers, idempotency, column-level encryption, and active defense.
+- `docs/ai-skills/offline-llm-orchestrator.md` : Enforces offline-first AI integration, strict session segregation, PKI/Root CA injection, and secure MCP server deployment.
+- `docs/ai-skills/deep-cleanup.md` : Enforces rigorous pre-production sanitization (PII scrubbing, secret removal, residential IP removal, and AI context isolation).
