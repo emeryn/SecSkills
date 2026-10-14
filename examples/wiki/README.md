@@ -76,7 +76,9 @@ embedded help from docs/help for users and admins.
 ### Phase 7 — Optional Extensions
 Pick only what you need, one per session:
 ```text
-Add OIDC (code + PKCE) and LDAPS login with group-to-space-role mapping configurable in admin.
+Add OIDC (code + PKCE) and LDAPS login with group-to-space-role mapping, configurable either
+from the admin UI or from BACKEND_OIDC_* / BACKEND_LDAP_* environment variables (env wins and
+is shown read-only in the UI), with a "Test connection" action.
 ```
 ```text
 Using offline-llm-orchestrator, add "Ask the wiki": RAG over pages the user can read, with an

@@ -35,6 +35,9 @@ def test_admin_route_forbidden_to_user(client_as_user, route):
 | Auth | Reset token reused or expired | rejected |
 | Auth | TOTP code reused | rejected |
 | Auth | Admin without MFA | cannot access admin routes |
+| SSO config | Admin API update of a setting defined by env | 409, value unchanged |
+| SSO config | GET of OIDC/LDAP settings | secrets never returned |
+| SSO config | Invalid `BACKEND_OIDC_*` value at startup | startup fails with explicit error |
 | Session | Cookie flags | `__Host-`, `HttpOnly`, `Secure`, `SameSite=Lax` |
 | Session | Admin idle > 1 h | session expired |
 | Redirect | `next=//evil.example` | rejected |

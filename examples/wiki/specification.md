@@ -31,7 +31,7 @@ A self-hosted, offline-capable internal wiki where teams write and organize Mark
 Real-time co-editing, comments, public (anonymous) access, WYSIWYG editor, Mermaid/diagrams, email digests.
 
 ## Optional Extensions
-- **SSO:** OIDC and LDAPS with group-to-space-role mapping.
+- **SSO:** OIDC and LDAPS with group-to-space-role mapping, configurable from the admin UI or environment variables.
 - **Ask the wiki:** RAG over readable pages with a local LLM (`offline-llm-orchestrator`).
 - **MCP:** tools `search_pages`, `read_page`, `create_page`, `update_page` bound to the caller's permissions.
 

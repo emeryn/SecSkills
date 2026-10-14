@@ -102,7 +102,13 @@ Layout, README and UI follow the `project-blueprint` skill. Security rules in th
 - **Context detection:** admin sign-ins from unknown IP/device trigger a "New sign-in" notification and restrict destructive rights until MFA confirmation.
 - **Bootstrap admin:** random password generated on first boot, readable once via `make admin-password`, forced reset + MFA enrollment at first login.
 - **Break-glass account (optional):** local admin usable when SSO is down, disabled by default, every use raises a critical alert.
-- **SSO:** OIDC code flow + PKCE, `state` and `nonce` validated, ID token signature/`aud`/`iss` checked; LDAPS or StartTLS with certificate verification, LDAP filter values escaped (LDAP injection). Directory groups mapped to roles from the Admin UI.
+- **SSO:** OIDC code flow + PKCE, `state` and `nonce` validated, ID token signature/`aud`/`iss` checked; LDAPS or StartTLS with certificate verification, LDAP filter values escaped (LDAP injection). Directory groups mapped to roles.
+- **SSO configuration, two equivalent sources:** every OIDC and LDAP(S) setting (enable flag, issuer/server URL, client ID, scopes, bind DN, base DN, user/group filters, CA bundle, group-to-role mapping, auto-provisioning) can be set **either** from the Admin UI **or** from environment variables (`BACKEND_OIDC_*`, `BACKEND_LDAP_*`).
+  - Secrets (`client_secret`, bind password) come from `*_FILE` variables or the secrets provider, never plain env values in production; in the UI they are write-only (`••••last4`).
+  - Precedence: a setting defined by environment wins and is shown **read-only** in the Admin UI with a "Managed by environment" badge; everything else is editable and stored encrypted in the database.
+  - Same validation for both sources (Pydantic schema shared by env loader and admin API); invalid env configuration fails startup with a clear error, invalid UI input is rejected before saving.
+  - The Admin UI has a "Test connection" action (OIDC discovery + JWKS fetch, LDAP bind + sample group search) and every change is audited.
+  - Every variable is listed in `.env.example` (commented, disabled by default) and in the README configuration table, so a fully headless deployment never needs the UI. SSO stays optional: the app starts with local auth when nothing is configured.
 - **API keys (inbound):** ≥ 32 random bytes, shown once, stored as SHA-256 hash with visible prefix, scoped, expiring, revocable, last-used date displayed.
 - **Honeytokens (optional):** fake endpoints and fake credentials (e.g. a decoy admin account) that block the source IP and raise a critical alert. Client IP read only from trusted proxies (configured proxy count). Admins can unblock from the UI.
 
