@@ -1,0 +1,106 @@
+# Hardened compose template. Replace <digest> values with pinned digests.
+# Must start with a plain `docker compose up` / `podman compose up` on a fresh clone.
+#
+# Secret bootstrap: the `init` service runs the backend image once and executes
+# `app.core.bootstrap`, which creates (only if absent) in the `secrets` volume:
+#   app/master.key, app/session.key       0400  10001:10001
+#   db/password                           0440  10001:70    (read by postgres)
+#   tls/tls.crt, tls/tls.key (self-signed) 0440  10001:101   (read by nginx)
+# The backend image must contain /run/secrets owned by 10001 so the new volume
+# inherits that ownership.
+
+x-hardening: &hardening
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  pids_limit: 200
+  ulimits:
+    core: 0
+  restart: unless-stopped
+
+services:
+  init:
+    image: ${BACKEND_IMAGE:-app-backend}
+    build: ./backend
+    <<: *hardening
+    restart: "no"
+    user: "10001:10001"
+    group_add: ["70", "101"]
+    command: ["python", "-m", "app.core.bootstrap"]
+    volumes:
+      - secrets:/run/secrets
+    network_mode: none
+
+  db:
+    image: postgres:17-alpine@sha256:<digest>
+    <<: *hardening
+    user: "70:70"
+    environment:
+      POSTGRES_USER: app_owner
+      POSTGRES_DB: app
+      POSTGRES_PASSWORD_FILE: /run/secrets/db/password
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    tmpfs: [/tmp, /var/run/postgresql]
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - secrets:/run/secrets:ro
+    networks: [db_net]
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "app_owner", "-d", "app"]
+      interval: 10s
+      retries: 5
+    depends_on:
+      init:
+        condition: service_completed_successfully
+
+  backend:
+    image: ${BACKEND_IMAGE:-app-backend}
+    build: ./backend
+    <<: *hardening
+    user: "10001:10001"
+    environment:
+      BACKEND_DB_HOST: db
+      BACKEND_SECRETS_DIR: /run/secrets
+      BACKEND_TRUSTED_PROXY_COUNT: "1"
+    tmpfs: [/tmp]
+    volumes:
+      - secrets:/run/secrets:ro
+    networks: [backend_net, db_net, egress_net]
+    mem_limit: 512m
+    healthcheck:
+      test: ["CMD", "python", "-m", "app.healthcheck"]
+      interval: 15s
+      retries: 3
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: ${FRONTEND_IMAGE:-app-frontend}
+    build: ./frontend
+    <<: *hardening
+    user: "101:101"
+    tmpfs: [/tmp]
+    volumes:
+      - secrets:/run/secrets:ro
+    ports:
+      - "127.0.0.1:8443:8443"
+    networks: [frontend_net, backend_net]
+    mem_limit: 128m
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  db_data:
+  secrets:
+
+networks:
+  frontend_net:
+  backend_net:
+    internal: true
+  db_net:
+    internal: true
+  # Outbound only (syslog, SMTP, webhooks, LLM). Remove if the app needs no egress.
+  egress_net:

@@ -1,12 +1,16 @@
-# 🛡️ Secure App & Offline AI Architecture
+# Secure App & Offline AI Skills
 
-This repository uses AI Skills to enforce a **secure-by-design** and **offline-first** application boilerplate. It requires AI assistants (like Claude, Cline, or Roo) to adhere strictly to ANSSI/CIS/FBI guidelines and isolated execution environments.
+Claude Code skills that make the assistant produce secure-by-design (ANSSI/CIS/FBI/OWASP ASVS), offline-first and consistently structured applications, in English by default.
 
-## 📂 Project Structure & AI Skills
+## Content
+| Path | Purpose |
+|---|---|
+| `CLAUDE.md` | Global rules: skill routing, English by default, no change-log comments, precedence, git limits. |
+| `.claude/skills/secure-app-scaffolder/` | Hardened rootless stack, authorization, uploads, encryption, auth (OIDC/LDAPS/WebAuthn), tamper-evident audit, supply chain (SBOM, cosign, Trivy, OpenSCAP), MCP endpoints. `reference/` holds compose, Nginx and security-test templates. |
+| `.claude/skills/offline-llm-orchestrator/` | Ollama / OpenAI-compatible connectors, model integrity, internal CA, RAG isolation, prompt-injection and exfiltration defenses, opt-in agent mode, MCP. |
+| `.claude/skills/deep-cleanup/` | Inventory-first pre-production cleanup: debug code, AI change-log comments, mock data, secrets (tree, history, image layers), PII, metadata, IPs. |
+| `.claude/skills/project-blueprint/` | Canonical layout, naming, Makefile targets, code conventions, README template (`templates/README.md`), standard frontend shell and daily-use UX. |
+| `examples/wiki/` | Complete kickoff example: functional specification and phase-by-phase prompts for a secure wiki. |
 
-This project is guided by dynamic rules located in the documentation folder:
-
-- `.clauderules` (Root) : Forces the AI to read the skills before executing tasks.
-- `docs/ai-skills/secure-app-scaffolder.md` : Enforces zero-trust input, rootless containers, idempotency, column-level encryption, and active defense.
-- `docs/ai-skills/offline-llm-orchestrator.md` : Enforces offline-first AI integration, strict session segregation, PKI/Root CA injection, and secure MCP server deployment.
-- `docs/ai-skills/deep-cleanup.md` : Enforces rigorous pre-production sanitization (PII scrubbing, secret removal, residential IP removal, and AI context isolation).
+## Usage
+Copy `CLAUDE.md` and `.claude/skills/` into the target project, add a `docs/specification.md`, then ask Claude Code for the task. Skills also trigger automatically from their descriptions. See [examples/wiki/README.md](examples/wiki/README.md) for a full walkthrough.
